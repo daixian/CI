@@ -1,8 +1,10 @@
+# coding: utf-8
 import urllib
 from urllib import request
 import os
+import tarfile
 
-#下载
+#下载concurrentqueue
 dirConcur = "./concurrentqueue"
 if not os.path.exists(dirConcur):
     os.makedirs(dirConcur)
@@ -14,7 +16,12 @@ url = "https://github.com/cameron314/concurrentqueue/raw/master/concurrentqueue.
 request.urlretrieve(url, dirConcur + "/concurrentqueue.h")
 print("下载完成")
 
+#临时下载文件夹
+dirDownload = "./download"
+if not os.path.exists(dirDownload):
+    os.makedirs(dirDownload)
 
 print("下载 spdlog ...")
 url = "https://github.com/gabime/spdlog/archive/v1.3.1.tar.gz"
-request.urlretrieve(url, dirConcur + "/blockingconcurrentqueue.h")
+request.urlretrieve(url, dirDownload + "/v1.3.1.tar.gz")
+print("下载完成")
