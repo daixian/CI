@@ -1,2 +1,0 @@
-python help()
-pip3
