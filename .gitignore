@@ -4,3 +4,9 @@ concurrentqueue/
 \.vscode/ipch/
 
 download/
+
+spdlog/
+
+gtest/
+
+dlog/
