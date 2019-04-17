@@ -24,4 +24,4 @@ if not os.path.exists(dirDownload):
 print("download spdlog ...")
 url = "https://github.com/gabime/spdlog/archive/v1.3.1.tar.gz"
 request.urlretrieve(url, dirDownload + "/v1.3.1.tar.gz")
-print(""done!")
+print("done!")
