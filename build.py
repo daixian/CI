@@ -89,7 +89,7 @@ def request_report(bcount, bsize, size):
     if per > 100:
         per = 100
     global report_lastper
-    if per != report_lastper:
+    if per - report_lastper > 1 or per == 100:
         report_lastper = per
         progress_bar("download:", 100, per)
 
