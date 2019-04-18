@@ -85,7 +85,8 @@ def download_with_cache(in_url, in_filepath):
         print(in_filepath+" [cached]")
     else:
         print(in_url+" -> "+in_filepath)
-        request.urlretrieve(in_url, in_filepath, request_report)
+        #request.urlretrieve(in_url, in_filepath, request_report) 有的系统不能\r,所以就先不输出进度了
+        request.urlretrieve(in_url, in_filepath)
         print(in_filepath+" [done]")
 
 
