@@ -102,6 +102,8 @@ def download_with_cache(in_url, in_filepath):
     else:
         print(in_url+" -> "+in_filepath)
         # 有的系统不能\r,所以就先不输出进度了
+        global report_lastper
+        report_lastper = -1
         request.urlretrieve(in_url, in_filepath, request_report)
         # request.urlretrieve(in_url, in_filepath)
         sys.stdout.write("\r\n")
@@ -130,6 +132,7 @@ def download_spdlog():
     downloadFile = dirDownload + "/spdlog-v1.3.1.tar.gz"
     download_with_cache(url, downloadFile)
 
+    print("extract start ...")
     extract_tar(downloadFile, dirLib)
     if os.path.exists(dirLib+"/spdlog"):
         shutil.rmtree(dirLib+"/spdlog")
@@ -144,6 +147,7 @@ def download_gtest():
     downloadFile = dirDownload + "/gtest-1.8.1.tar.gz"
     download_with_cache(url, downloadFile)
 
+    print("extract start ...")
     extract_tar(downloadFile, dirLib)
     if os.path.exists(dirLib+"/gtest"):
         shutil.rmtree(dirLib+"/gtest")
@@ -158,6 +162,7 @@ def download_cryptopp():
     downloadFile = dirDownload + "/CRYPTOPP_8_1_0.tar.gz"
     download_with_cache(url, downloadFile)
 
+    print("extract start ...")
     extract_tar(downloadFile, dirLib)
     if os.path.exists(dirLib+"/cryptopp"):
         shutil.rmtree(dirLib+"/cryptopp")
@@ -178,6 +183,7 @@ def download_dlog():
     downloadFile = dirDownload + "/dlog.zip"
     download_with_cache(url, downloadFile)
 
+    print("extract start ...")
     if os.path.exists(dirLib+"/dlog"):
         shutil.rmtree(dirLib + "/dlog")
     extract_zip(downloadFile, dirLib)
@@ -197,7 +203,7 @@ def download_boost():
 
     # if os.path.exists(dirLib+"/boost_1_70_0"):
     #     shutil.rmtree(dirLib + "/boost_1_70_0")
-    print("unzip boost ...")
+    print("extract start ...")
     extract_zip(downloadFile, dirLib)
     print("done!")
 
@@ -209,6 +215,7 @@ def download_eigen():
     downloadFile = dirDownload + "/eigen-3.3.7.tar.gz"
     download_with_cache(url, downloadFile)
 
+    print("extract start ...")
     extract_tar(downloadFile, dirLib)
     if os.path.exists(dirLib+"/eigen"):
         shutil.rmtree(dirLib+"/eigen")
@@ -223,6 +230,7 @@ def download_eventbus():
     downloadFile = dirDownload + "/eventbus-v2.4.1.tar.gz"
     download_with_cache(url, downloadFile)
 
+    print("extract start ...")
     extract_tar(downloadFile, dirLib)
     if os.path.exists(dirLib+"/EventBus"):
         shutil.rmtree(dirLib+"/EventBus")
