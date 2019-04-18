@@ -51,28 +51,28 @@ def extract_tar(tar_path, target_path):
         print(tar_path+"unzip error")
 
 
+# 用来记一个状态,输出日志行数太多
+report_lastper = -1
+
+
 def progress_bar(name, total, progress):
-    """
-    Displays or updates a console progress bar.
-    Original source: https://stackoverflow.com/a/15860757/1391441
-    """
+    # 如果已经结束过了,那么就不画进度了
+    if report_lastper == total:
+        return
+
     barLength, status = 40, ""
     progress = float(progress) / float(total)
     if progress < 0:
         return
     if progress >= 1.:
-        progress, status = 1, ""  # "\r\n"
+        progress, status = 1, "\r\n"  # "\r\n"
     block = int(round(barLength * progress))
-    text = "\r{} [{}] {:.0f}% {}".format(name,
+    text = "\r{} [{}] {:.2f}% {}".format(name,
                                          "#" * block + "-" *
-                                         (barLength - block), round(progress * 100, 0),
+                                         (barLength - block), round(progress * 100, 2),
                                          status)
     sys.stdout.write(text)
     sys.stdout.flush()
-
-
-# 用来记一个状态,输出日志行数太多
-report_lastper = -1
 
 
 def request_report(bcount, bsize, size):
@@ -90,8 +90,8 @@ def request_report(bcount, bsize, size):
         per = 100
     global report_lastper
     if per - report_lastper > 1 or per == 100:
-        report_lastper = per
         progress_bar("download:", 100, per)
+        report_lastper = per
 
 
 def download_with_cache(in_url, in_filepath):
@@ -106,8 +106,6 @@ def download_with_cache(in_url, in_filepath):
         report_lastper = -1
         request.urlretrieve(in_url, in_filepath, request_report)
         # request.urlretrieve(in_url, in_filepath)
-        sys.stdout.write("\r\n")
-        sys.stdout.flush()
     print(in_filepath+" [done]")
 
 
@@ -122,7 +120,7 @@ def download_concurrentqueue():
     download_with_cache(url, dirConcur + "/blockingconcurrentqueue.h")
     url = "https://github.com/cameron314/concurrentqueue/raw/master/concurrentqueue.h"
     download_with_cache(url, dirConcur + "/concurrentqueue.h")
-    print("done!")
+    print("done!\r\n")
 
 
 def download_spdlog():
@@ -137,7 +135,7 @@ def download_spdlog():
     if os.path.exists(dirLib+"/spdlog"):
         shutil.rmtree(dirLib+"/spdlog")
     os.renames(dirLib + "/spdlog-1.3.1", dirLib + "/spdlog")
-    print("done!")
+    print("done!\r\n")
 
 
 def download_gtest():
@@ -152,7 +150,7 @@ def download_gtest():
     if os.path.exists(dirLib+"/gtest"):
         shutil.rmtree(dirLib+"/gtest")
     os.renames(dirLib+"/googletest-release-1.8.1", dirLib+"/gtest")
-    print("done!")
+    print("done!\r\n")
 
 
 def download_cryptopp():
@@ -169,11 +167,11 @@ def download_cryptopp():
     os.renames(dirLib+"/cryptopp-CRYPTOPP_8_1_0", dirLib+"/cryptopp")
     # 到这里只是下载了头文件
     # url = "http://mr.xuexuesoft.com:8010/build/cryptopp/x64/Release/MD/cryptlib.zip"
-    url = "http://xuexuesoft.com/files/build/cryptlib.zip" 
+    url = "http://xuexuesoft.com/files/build/cryptlib.zip"
     downloadFile = dirDownload + "/cryptlib-x64-release-md.zip"
     download_with_cache(url, downloadFile)
     extract_zip(downloadFile, dirLib + "/cryptopp/x64/Release/MD")
-    print("done!")
+    print("done!\r\n")
 
 
 def download_dlog():
@@ -190,14 +188,14 @@ def download_dlog():
 
     shutil.rmtree(dirLib+"/dlog/x86")
     os.renames(dirLib + "/dlog/x64/dlog.h", dirLib + "/dlog/dlog.h")
-    print("done!")
+    print("done!\r\n")
 
 
 def download_boost():
     '''下载库 boost'''
     print("download boost ...")
     # url = "http://mr.xuexuesoft.com:8010/build/boost_1_70_0.zip"
-    url = "http://xuexuesoft.com/files/build/boost_1_70_0.zip"   
+    url = "http://xuexuesoft.com/files/build/boost_1_70_0.zip"
     downloadFile = dirDownload + "/boost_1_70_0.zip"
     download_with_cache(url, downloadFile)
 
@@ -205,7 +203,7 @@ def download_boost():
     #     shutil.rmtree(dirLib + "/boost_1_70_0")
     print("extract start ...")
     extract_zip(downloadFile, dirLib)
-    print("done!")
+    print("done!\r\n")
 
 
 def download_eigen():
@@ -220,7 +218,7 @@ def download_eigen():
     if os.path.exists(dirLib+"/eigen"):
         shutil.rmtree(dirLib+"/eigen")
     os.renames(dirLib+"/eigen-git-mirror-3.3.7", dirLib+"/eigen")
-    print("done!")
+    print("done!\r\n")
 
 
 def download_eventbus():
@@ -235,7 +233,7 @@ def download_eventbus():
     if os.path.exists(dirLib+"/EventBus"):
         shutil.rmtree(dirLib+"/EventBus")
     os.renames(dirLib+"/EventBus-2.4.1", dirLib+"/EventBus")
-    print("done!")
+    print("done!\r\n")
 
 
 download_concurrentqueue()
