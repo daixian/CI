@@ -63,13 +63,13 @@ set(Boost_DEBUG 0)
 # 使能测试
 enable_testing()
 
-add_subdirectory(dlog)
+#add_subdirectory(dlog)
 
 # 这里要添加gtest，这样就会去编译gtest然后设置了一些变量
-add_subdirectory(${PROJECT_LIB_DIR}/gtest)
+#add_subdirectory(${PROJECT_LIB_DIR}/gtest)
 
-include(CTest)
+#include(CTest)
 #include(GoogleTest)
-add_subdirectory(${CMAKE_SOURCE_DIR}/test)
+#add_subdirectory(${CMAKE_SOURCE_DIR}/test)
 
 

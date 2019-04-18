@@ -58,8 +58,10 @@ def progress_bar(name, total, progress):
     """
     barLength, status = 40, ""
     progress = float(progress) / float(total)
+    if progress < 0:
+        return
     if progress >= 1.:
-        progress, status = 1 , "" #"\r\n"
+        progress, status = 1, ""  # "\r\n"
     block = int(round(barLength * progress))
     text = "\r{} [{}] {:.0f}% {}".format(name,
                                          "#" * block + "-" *
@@ -69,13 +71,27 @@ def progress_bar(name, total, progress):
     sys.stdout.flush()
 
 
-def request_report(a, b, size):
-    '''输出一个下载进度'''
-    per = 100*a*b/size
+# 用来记一个状态,输出日志行数太多
+report_lastper = -1
+
+
+def request_report(bcount, bsize, size):
+    '''输出一个下载进度
+    params:
+        bcount:已下载的块数量
+        bsize:块大小
+        size:文件总大小
+    '''
+    if size == -1:  # 可能是不支持进度那么就是-1
+        return
+    per = 100*bcount*bsize/size
     per = round(per, 2)
     if per > 100:
         per = 100
-    progress_bar("download:", 100, per)
+    global report_lastper
+    if per != report_lastper:
+        report_lastper = per
+        progress_bar("download:", 100, per)
 
 
 def download_with_cache(in_url, in_filepath):
@@ -85,9 +101,12 @@ def download_with_cache(in_url, in_filepath):
         print(in_filepath+" [cached]")
     else:
         print(in_url+" -> "+in_filepath)
-        #request.urlretrieve(in_url, in_filepath, request_report) 有的系统不能\r,所以就先不输出进度了
-        request.urlretrieve(in_url, in_filepath)
-        print(in_filepath+" [done]")
+        # 有的系统不能\r,所以就先不输出进度了
+        request.urlretrieve(in_url, in_filepath, request_report)
+        # request.urlretrieve(in_url, in_filepath)
+        sys.stdout.write("\r\n")
+        sys.stdout.flush()
+    print(in_filepath+" [done]")
 
 
 def download_concurrentqueue():
@@ -122,7 +141,7 @@ def download_gtest():
     '''下载库 gtest'''
     print("download gtest ...")
     url = "https://github.com/google/googletest/archive/release-1.8.1.tar.gz"
-    downloadFile = dirDownload + "/release-1.8.1.tar.gz"
+    downloadFile = dirDownload + "/gtest-1.8.1.tar.gz"
     download_with_cache(url, downloadFile)
 
     extract_tar(downloadFile, dirLib)
@@ -166,6 +185,7 @@ def download_dlog():
     os.renames(dirLib + "/dlog/x64/dlog.h", dirLib + "/dlog/dlog.h")
     print("done!")
 
+
 def download_boost():
     '''下载库 boost'''
     print("download boost ...")
@@ -177,8 +197,36 @@ def download_boost():
     #     shutil.rmtree(dirLib + "/boost_1_70_0")
     print("unzip boost ...")
     extract_zip(downloadFile, dirLib)
-
     print("done!")
+
+
+def download_eigen():
+    '''下载库 eigen'''
+    print("download eigen ...")
+    url = "https://github.com/eigenteam/eigen-git-mirror/archive/3.3.7.tar.gz"
+    downloadFile = dirDownload + "/eigen-3.3.7.tar.gz"
+    download_with_cache(url, downloadFile)
+
+    extract_tar(downloadFile, dirLib)
+    if os.path.exists(dirLib+"/eigen"):
+        shutil.rmtree(dirLib+"/eigen")
+    os.renames(dirLib+"/eigen-git-mirror-3.3.7", dirLib+"/eigen")
+    print("done!")
+
+
+def download_eventbus():
+    '''下载库 eventbus'''
+    print("download eventbus ...")
+    url = "https://github.com/gelldur/EventBus/archive/v2.4.1.tar.gz"
+    downloadFile = dirDownload + "/eventbus-v2.4.1.tar.gz"
+    download_with_cache(url, downloadFile)
+
+    extract_tar(downloadFile, dirLib)
+    if os.path.exists(dirLib+"/EventBus"):
+        shutil.rmtree(dirLib+"/EventBus")
+    os.renames(dirLib+"/EventBus-2.4.1", dirLib+"/EventBus")
+    print("done!")
+
 
 download_concurrentqueue()
 download_spdlog()
@@ -186,3 +234,5 @@ download_gtest()
 download_cryptopp()
 download_dlog()
 download_boost()
+download_eigen()
+download_eventbus()
