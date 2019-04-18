@@ -163,7 +163,8 @@ def download_cryptopp():
         shutil.rmtree(dirLib+"/cryptopp")
     os.renames(dirLib+"/cryptopp-CRYPTOPP_8_1_0", dirLib+"/cryptopp")
     # 到这里只是下载了头文件
-    url = "http://mr.xuexuesoft.com:8010/build/cryptopp/x64/Release/MD/cryptlib.zip"
+    # url = "http://mr.xuexuesoft.com:8010/build/cryptopp/x64/Release/MD/cryptlib.zip"
+    url = "http://xuexuesoft.com/files/build/cryptlib.zip" 
     downloadFile = dirDownload + "/cryptlib-x64-release-md.zip"
     download_with_cache(url, downloadFile)
     extract_zip(downloadFile, dirLib + "/cryptopp/x64/Release/MD")
@@ -189,7 +190,8 @@ def download_dlog():
 def download_boost():
     '''下载库 boost'''
     print("download boost ...")
-    url = "http://mr.xuexuesoft.com:8010/build/boost_1_70_0.zip"
+    # url = "http://mr.xuexuesoft.com:8010/build/boost_1_70_0.zip"
+    url = "http://xuexuesoft.com/files/build/boost_1_70_0.zip"   
     downloadFile = dirDownload + "/boost_1_70_0.zip"
     download_with_cache(url, downloadFile)
 
