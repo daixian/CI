@@ -10,3 +10,8 @@ spdlog/
 gtest/
 
 dlog/
+
+build/
+lib/
+
+test/
