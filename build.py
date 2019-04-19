@@ -265,6 +265,7 @@ def download_fscore():
 
     print("done!\r\n")
 
+
 def download_rclapi():
     '''下载库 rclapi'''
     print("download rclapi ...")
@@ -279,6 +280,39 @@ def download_rclapi():
 
     print("done!\r\n")
 
+
+def download_xuexueutility():
+    '''下载库 xuexue.utility'''
+    print("download xuexue.utility ...")
+    url = "https://github.com/daixian/xuexue.utility/releases/download/V1.0.0/Release-20190323.3.zip"
+    downloadFile = dirDownload + "/xuexue.utility_20190323.3.zip"
+    download_with_cache(url, downloadFile)
+
+    print("extract start ...")
+    if os.path.exists(dirLib+"/xuexue.utility"):
+        shutil.rmtree(dirLib + "/xuexue.utility")
+    if os.path.exists(dirLib+"/xuexue.unity.utility"):
+        shutil.rmtree(dirLib+"/xuexue.unity.utility")
+    extract_zip(downloadFile, dirLib)
+    os.renames(dirLib + "/utility/xuexue.utility", dirLib + "/xuexue.utility")
+    os.renames(dirLib+"/utility/xuexue.unity.utility",
+               dirLib+"/xuexue.unity.utility")
+    print("done!\r\n")
+
+
+def download_dotnet_utility():
+    '''下载库 dotnet utility'''
+    print("download dotnet_utility ...")
+    url = "http://mr.xuexuesoft.com:8010/build/dotnet_190419.zip"
+    downloadFile = dirDownload + "/dotnet_190419.zip"
+    download_with_cache(url, downloadFile)
+
+    print("extract start ...")
+    if os.path.exists(dirLib+"/dotnet"):
+        shutil.rmtree(dirLib + "/dotnet")
+    extract_zip(downloadFile, dirLib)
+    print("done!\r\n")
+
 # download_concurrentqueue()
 # download_spdlog()
 # download_gtest()
@@ -291,12 +325,16 @@ def download_rclapi():
 # download_fscore()
 # download_rclapi()
 
-#包含目录
+
+download_xuexueutility()
+download_dotnet_utility()
+
+# 包含目录
 # ../lib
 # ../lib/rapidjson/include
-#../lib;../lib/rapidjson/include;
+# ../lib;../lib/rapidjson/include;
 
-#库目录
+# 库目录
 # ../lib/dlog/x64
 # ../lib/FSCore/x64
 # ../lib/RclAPI/x64
