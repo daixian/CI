@@ -236,6 +236,21 @@ def download_eventbus():
     print("done!\r\n")
 
 
+def download_rapidjson():
+    '''下载库 rapidjson'''
+    print("download rapidjson ...")
+    url = "https://github.com/Tencent/rapidjson/archive/v1.1.0.tar.gz"
+    downloadFile = dirDownload + "/rapidjson-v1.1.0.tar.gz"
+    download_with_cache(url, downloadFile)
+
+    print("extract start ...")
+    extract_tar(downloadFile, dirLib)
+    if os.path.exists(dirLib+"/rapidjson"):
+        shutil.rmtree(dirLib+"/rapidjson")
+    os.renames(dirLib+"/rapidjson-1.1.0", dirLib+"/rapidjson")
+    print("done!\r\n")
+
+
 download_concurrentqueue()
 download_spdlog()
 download_gtest()
@@ -244,3 +259,4 @@ download_dlog()
 download_boost()
 download_eigen()
 download_eventbus()
+download_rapidjson()
