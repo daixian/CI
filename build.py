@@ -167,7 +167,7 @@ def download_cryptopp():
     os.renames(dirLib+"/cryptopp-CRYPTOPP_8_1_0", dirLib+"/cryptopp")
     # 到这里只是下载了头文件
     # url = "http://mr.xuexuesoft.com:8010/build/cryptopp/x64/Release/MD/cryptlib.zip"
-    url = "http://xuexuesoft.com/files/build/cryptlib.zip"
+    url = "http://xuexuesoft.com/files/build/cryptlib/MD/cryptlib.zip"
     downloadFile = dirDownload + "/cryptlib-x64-release-md.zip"
     download_with_cache(url, downloadFile)
     extract_zip(downloadFile, dirLib + "/cryptopp/x64/Release/MD")
@@ -239,24 +239,65 @@ def download_eventbus():
 def download_rapidjson():
     '''下载库 rapidjson'''
     print("download rapidjson ...")
-    url = "https://github.com/Tencent/rapidjson/archive/v1.1.0.tar.gz"
-    downloadFile = dirDownload + "/rapidjson-v1.1.0.tar.gz"
+    url = "http://xuexuesoft.com/files/build/rapidjson-master.zip"
+    downloadFile = dirDownload + "/rapidjson-190419.zip"
     download_with_cache(url, downloadFile)
 
     print("extract start ...")
-    extract_tar(downloadFile, dirLib)
+    extract_zip(downloadFile, dirLib)
     if os.path.exists(dirLib+"/rapidjson"):
         shutil.rmtree(dirLib+"/rapidjson")
-    os.renames(dirLib+"/rapidjson-1.1.0", dirLib+"/rapidjson")
+    os.renames(dirLib+"/rapidjson-master", dirLib+"/rapidjson")
     print("done!\r\n")
 
 
-download_concurrentqueue()
-download_spdlog()
-download_gtest()
-download_cryptopp()
-download_dlog()
-download_boost()
-download_eigen()
-download_eventbus()
-download_rapidjson()
+def download_fscore():
+    '''下载库 fscore'''
+    print("download fscore ...")
+    url = "http://mr.xuexuesoft.com:8010/build/FSCore_190419.zip"
+    downloadFile = dirDownload + "/FSCore_190419.zip"
+    download_with_cache(url, downloadFile)
+
+    print("extract start ...")
+    if os.path.exists(dirLib+"/FSCore"):
+        shutil.rmtree(dirLib+"/FSCore")
+    extract_zip(downloadFile, dirLib)
+
+    print("done!\r\n")
+
+def download_rclapi():
+    '''下载库 rclapi'''
+    print("download rclapi ...")
+    url = "http://mr.xuexuesoft.com:8010/build/RclAPI_190419.zip"
+    downloadFile = dirDownload + "/RclAPI_190419.zip"
+    download_with_cache(url, downloadFile)
+
+    print("extract start ...")
+    if os.path.exists(dirLib+"/RclAPI"):
+        shutil.rmtree(dirLib+"/RclAPI")
+    extract_zip(downloadFile, dirLib)
+
+    print("done!\r\n")
+
+# download_concurrentqueue()
+# download_spdlog()
+# download_gtest()
+# download_cryptopp()
+# download_dlog()
+# download_boost()
+# download_eigen()
+# download_eventbus()
+# download_rapidjson()
+# download_fscore()
+# download_rclapi()
+
+#包含目录
+# ../lib
+# ../lib/rapidjson/include
+#../lib;../lib/rapidjson/include;
+
+#库目录
+# ../lib/dlog/x64
+# ../lib/FSCore/x64
+# ../lib/RclAPI/x64
+# ../lib/FSCore/x64;../lib/dlog/x64;../lib/RclAPI/x64;
