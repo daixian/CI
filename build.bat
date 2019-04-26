@@ -1,2 +1,2 @@
 python -V
-python build.py
+python ./tools/DownloadLib.py "concurrentqueue" "spdlog"
