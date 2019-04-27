@@ -221,6 +221,20 @@ def download_boost_linux():
     print("done!\r\n")
 
 
+def download_boost_arm():
+    '''下载库 boost'''
+    print("download boost linux ...")
+    url = "http://xuexuesoft.com/files/build/linux/arm/boost_1_70_0_arm64.zip"
+    downloadFile = dirDownload + "/boost_1_70_0_arm64.zip"
+    download_with_cache(url, downloadFile)
+
+    # if os.path.exists(dirLib+"/boost_1_70_0"):
+    #     shutil.rmtree(dirLib + "/boost_1_70_0")
+    print("extract start ...")
+    extract_zip(downloadFile, dirLib)
+    print("done!\r\n")
+
+
 def download_eigen():
     '''下载库 eigen'''
     print("download eigen ...")
@@ -373,6 +387,8 @@ def main(argv):
         elif opt in ("-p", "--platform"):
             platform = arg
 
+    print("download lib: platform = " + platform)
+
     for arg in args:
         if (arg == "concurrentqueue"):
             download_concurrentqueue()
@@ -394,6 +410,8 @@ def main(argv):
                 download_boost()
             elif (platform == "linux"):
                 download_boost_linux()
+            elif (platform == "arm"):
+                download_boost_arm()
 
         elif (arg == "eigen"):
             download_eigen()
