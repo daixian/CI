@@ -47,7 +47,7 @@ message(STATUS "Boost_LIBRARIES = " ${Boost_LIBRARIES})
 
 # Dependencies
 target_include_directories(test.out PRIVATE ${CMAKE_SOURCE_DIR} ${PROJECT_LIB_DIR} ${Boost_INCLUDE_DIRS})
-target_link_libraries(test.out PRIVATE app ${Boost_LIBRARIES} gtest gtest_main)
+target_link_libraries(test.out PRIVATE ${Boost_LIBRARIES} gtest gtest_main)
 
 add_test(NAME AllCppTest COMMAND test.out)
 

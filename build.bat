@@ -1,5 +1,5 @@
-REM python -V
-REM python ./tools/DownloadLib.py "concurrentqueue" "spdlog" "gtest" "boost" 
+python -V
+python ./tools/DownloadLib.py -d "C:/dxlib/download" -l "C:/dxlib/lib" "concurrentqueue" "dlog" "gtest" "boost"
 mkdir build
 cd build
 mkdir Win64
