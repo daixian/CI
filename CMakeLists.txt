@@ -68,6 +68,8 @@ message(STATUS "Platform = Cross Compile")
 set(BOOST_ROOT ${PROJECT_LIB_DIR}/boost_1_70_0_arm64)
 endif()
 
+message(STATUS "BOOST_ROOT = " ${BOOST_ROOT})
+
 add_definitions(-DBOOST_ALL_NO_LIB)
 
 set(Boost_DEBUG 0)
