@@ -22,72 +22,48 @@ endif()
 # <prefix>/lib*/ * <prefix>/include/
 set(config_install_dir "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
 
-# Library definition
-if(WIN32)
-add_library(app
-            SHARED
-            resource.h
-            stdafx.h
-            targetver.h
-            Common/Common.h
-            Common/Debug.h
-            Common/FileHelper.h
-            Common/stack_allocator.hpp
-            Common/MemoryLog.h
-            dlog.h
-            Common/Debug.cpp
-            Common/Common.cpp
-            Common/FileHelper.cpp
-            Common/MemoryLog.cpp
-            dlog.cpp
-            stdafx.cpp
-            dllmain.cpp
-            dlog.rc)
-else()
-add_library(dlog
-            STATIC
-            resource.h
-            stdafx.h
-            targetver.h
-            Common/Common.h
-            Common/Debug.h
-            Common/FileHelper.h
-            Common/stack_allocator.hpp
-            Common/MemoryLog.h
-            dlog.h
-            Common/Debug.cpp
-            Common/Common.cpp
-            Common/FileHelper.cpp
-            Common/MemoryLog.cpp
-            dlog.cpp
-            stdafx.cpp
-            dllmain.cpp)
+add_executable(app main.cpp)
+
+message(STATUS "CMAKE_CFG_INTDIR = " ${CMAKE_CFG_INTDIR})
+
+# 设置dlog库的库目录,x64版本
+if(NOT DEFINED dlog_LIB_DIR)
+  set(dlog_LIB_DIR ${PROJECT_LIB_DIR}/dlog/x64)
 endif()
-# target_compile_features(dlog PUBLIC cxx_std_14)
+set(dlog_LIB ${dlog_LIB_DIR}/dlog.lib)
+message(STATUS "dlog_LIB = " ${dlog_LIB})
+#拷贝dlog.dll到安装目录
+add_custom_command(TARGET app POST_BUILD        # Adds a post-build event to MyTest
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different  # which executes "cmake - E copy_if_different..."
+        "${PROJECT_LIB_DIR}/dlog/x64/dlog.dll"      # <--this is in-file
+        ${CMAKE_INSTALL_PREFIX}/dlog.dll)                 # <--this is out-file path
+ 
+# 这里的复制没有太好的方法,因为vs会自己多出Release文件夹来,只能把文件夹名字写死了
+# https://stackoverflow.com/questions/39282430/how-to-get-current-configuration-release-debug-in-cmake-for-visual-studio
+if(WIN32)
+add_custom_command(TARGET app POST_BUILD       
+COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dlog_LIB_DIR}/dlog.dll" ${EXECUTABLE_OUTPUT_PATH}/Release/dlog.dll)
+add_custom_command(TARGET app POST_BUILD       
+COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dlog_LIB_DIR}/dlog.dll" ${EXECUTABLE_OUTPUT_PATH}/RelWithDebInfo/dlog.dll)  
+endif()
 
-# Dependencies
-# # 设置spdlog库的目录
-# if(NOT DEFINED spdlog_INCLUDE_DIRS)
-#   set(spdlog_INCLUDE_DIRS ${PROJECT_LIB_DIR}/spdlog/include)
-# endif()
-# # 输出spdlog库的目录看看
-# message(STATUS "spdlog_INCLUDE_DIRS = " ${spdlog_INCLUDE_DIRS})
-
+# 设置boost库       
 find_package(Boost 1.70.0 REQUIRED COMPONENTS filesystem date_time)
 message(STATUS "Boost_INCLUDE_DIRS = " ${Boost_INCLUDE_DIRS})
 message(STATUS "Boost_LIBRARIES = " ${Boost_LIBRARIES})
 
-target_include_directories(dlog PRIVATE ${Boost_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR} ${spdlog_INCLUDE_DIRS} ${PROJECT_LIB_DIR})
-target_link_libraries(dlog PRIVATE ${Boost_LIBRARIES})
+target_include_directories(app PRIVATE ${CMAKE_SOURCE_DIR} ${PROJECT_LIB_DIR} ${Boost_INCLUDE_DIRS}  )
+target_link_libraries(app PRIVATE ${Boost_LIBRARIES} ${dlog_LIB})
 
 # 全都安装到根目录
-install(TARGETS dlog
+install(TARGETS app
        RUNTIME DESTINATION "./"
        LIBRARY DESTINATION "./"
        ARCHIVE DESTINATION "./"
 )
-install(FILES "dlog.h" DESTINATION "./")
-install(FILES "../UnitTest/DLog.cs" DESTINATION "./")
+# 安装头文件
+# install(FILES "dlog.h" DESTINATION "./")
+# install(FILES "../UnitTest/DLog.cs" DESTINATION "./")
 
 # Configuration
 set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")

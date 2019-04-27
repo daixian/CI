@@ -18,13 +18,19 @@ cmake_minimum_required(VERSION 3.0)
 # 在上面设置工具链之后下面要立马project命令
 project(app VERSION 2.1.2 LANGUAGES CXX)
 
+# 修改一些默认值 Use this snippet *after* PROJECT(xxx):
+IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  SET(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/bin CACHE PATH "Install directory" FORCE)
+ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+
 set(CMAKE_CXX_STANDARD 14)
 
 option(ENABLE_TEST "Enable test" OFF)
-option(CROSS_COMPILE "Cross Compile" ON)
+option(CROSS_COMPILE "Cross Compile" OFF)
 
 enable_testing()
 
+#设置文件输出的目录
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 set(RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -54,6 +60,7 @@ endif()
 
 # 使用编好的boost库
 if(CROSS_COMPILE) 
+message(STATUS "Platform = Cross Compile")
 set(BOOST_ROOT ${PROJECT_LIB_DIR}/boost_1_70_0_arm64)
 endif()
 
