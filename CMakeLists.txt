@@ -67,8 +67,13 @@ if(CROSS_COMPILE)
 message(STATUS "Platform = Cross Compile")
 set(BOOST_ROOT ${PROJECT_LIB_DIR}/boost_1_70_0_arm64)
 endif()
-
 message(STATUS "BOOST_ROOT = " ${BOOST_ROOT})
+
+if(WIN32)
+set(OpenCV_DIR ${PROJECT_LIB_DIR}/opencv-341-build-x64-vs2017/install)
+else()
+endif()
+message(STATUS "OpenCV_DIR = " ${OpenCV_DIR})
 
 add_definitions(-DBOOST_ALL_NO_LIB)
 

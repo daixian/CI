@@ -17,6 +17,7 @@ dirLib = "./lib"
 # 项目内部的依赖库文件夹(要使用cmake一起构建的库)
 dirInternalLib = "./lib"
 
+
 def extract_zip(zfile_path, unzip_dir):
     '''
     function:解压
@@ -151,7 +152,8 @@ def download_gtest():
     extract_tar(downloadFile, dirInternalLib)
     if os.path.exists(dirInternalLib+"/gtest"):
         shutil.rmtree(dirInternalLib+"/gtest")
-    os.renames(dirInternalLib+"/googletest-release-1.8.1", dirInternalLib+"/gtest")
+    os.renames(dirInternalLib+"/googletest-release-1.8.1",
+               dirInternalLib+"/gtest")
     print("done!\r\n")
 
 
@@ -349,6 +351,7 @@ def download_dotnet_utility():
     extract_zip(downloadFile, dirLib)
     print("done!\r\n")
 
+
 def download_opencv3():
     '''下载库 opencv3'''
     print("download opencv3 ...")
@@ -467,6 +470,12 @@ def main(argv):
 
         elif (arg == "dotnet_utility"):
             download_dotnet_utility()
+
+        elif (arg == "opencv3"):
+            if (platform == "windows"):
+                download_opencv3()
+            elif (platform == "linux"):
+                download_opencv3()
 
 
 if __name__ == "__main__":
