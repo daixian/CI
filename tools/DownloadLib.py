@@ -349,6 +349,21 @@ def download_dotnet_utility():
     extract_zip(downloadFile, dirLib)
     print("done!\r\n")
 
+def download_opencv3():
+    '''下载库 opencv3'''
+    print("download opencv3 ...")
+    url = "http://mr.xuexuesoft.com:8010/files/build/opencv-341-build-x64-vs2017.zip"
+    downloadFile = dirDownload + "/opencv-341-build-x64-vs2017.zip"
+    download_with_cache(url, downloadFile)
+
+    if os.path.exists(dirLib + "/opencv-341-build-x64-vs2017"):
+        print("dir exists,don't extract!")
+    else:
+        # shutil.rmtree(dirLib + "/boost_1_70_0")
+        print("extract start ...")
+        extract_zip(downloadFile, dirLib)
+    print("done!\r\n")
+
 # download_concurrentqueue()
 # download_spdlog()
 # download_gtest()
