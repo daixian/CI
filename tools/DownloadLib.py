@@ -195,6 +195,20 @@ def download_dlog():
     print("done!\r\n")
 
 
+def download_dlog_linux():
+    '''下载库 dlog'''
+    print("download dlog ...")
+    url = "http://xuexuesoft.com/files/build/linux/x64/dlog.zip"
+    downloadFile = dirDownload + "/dlog.zip"
+    download_with_cache(url, downloadFile)
+
+    print("extract start ...")
+    if os.path.exists(dirLib+"/dlog"):
+        shutil.rmtree(dirLib + "/dlog")
+    extract_zip(downloadFile, dirLib)
+    print("done!\r\n")
+
+
 def download_boost():
     '''下载库 boost'''
     print("download boost ...")
@@ -367,6 +381,21 @@ def download_opencv3():
         extract_zip(downloadFile, dirLib)
     print("done!\r\n")
 
+def download_opencv3_linux():
+    '''下载库 opencv3 linux'''
+    print("download opencv3 linux ...")
+    url = "http://xuexuesoft.com/files/build/linux/x64/opencv-3.4.6.zip"
+    downloadFile = dirDownload + "/opencv-3.4.6.zip"
+    download_with_cache(url, downloadFile)
+
+    if os.path.exists(dirLib + "/opencv-3.4.6"):
+        print("dir exists,don't extract!")
+    else:
+        # shutil.rmtree(dirLib + "/boost_1_70_0")
+        print("extract start ...")
+        extract_zip(downloadFile, dirLib)
+    print("done!\r\n")
+
 # download_concurrentqueue()
 # download_spdlog()
 # download_gtest()
@@ -440,7 +469,12 @@ def main(argv):
             download_cryptopp()
 
         elif (arg == "dlog"):
-            download_dlog()
+            if (platform == "windows"):
+                download_dlog()
+            elif (platform == "linux"):
+                download_dlog_linux()
+            elif (platform == "arm"):
+                download_dlog_linux()
 
         elif (arg == "boost"):
             if (platform == "windows"):
@@ -475,7 +509,7 @@ def main(argv):
             if (platform == "windows"):
                 download_opencv3()
             elif (platform == "linux"):
-                download_opencv3()
+                download_opencv3_linux()
 
 
 if __name__ == "__main__":
