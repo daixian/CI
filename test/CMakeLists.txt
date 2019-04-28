@@ -16,38 +16,46 @@ if (CMAKE_VERSION  VERSION_LESS 2.8.11)
                         "${gmock_SOURCE_DIR}/include")
 endif()
 
-# # 设置dlog库的目录
-# if(NOT DEFINED dlog_LIBRARIES)
-#   if(WIN32)
-#   set(dlog_OBJECTS ${CMAKE_BINARY_DIR}/dlog/dlog.dir/Release)
-#   set(dlog_LIBRARIES ${LIBRARY_OUTPUT_PATH}/Release/dlog.lib 
-#       ${dlog_OBJECTS}/Common.obj
-#       ${dlog_OBJECTS}/Debug.obj
-#       ${dlog_OBJECTS}/FileHelper.obj
-#       ${dlog_OBJECTS}/MemoryLog.obj
-#       )
-#   else()
-#     set(dlog_LIBRARIES ${LIBRARY_OUTPUT_PATH}/libdlog.a)
-#   endif()
-# endif()
-# # 输出dlog库的目录看看
-# message(STATUS "dlog_INCLUDE_DIRS = " ${CMAKE_SOURCE_DIR})
-# message(STATUS "dlog_LIBRARIES = " ${dlog_LIBRARIES})
-
-# # 设置spdlog库的目录
-# if(NOT DEFINED spdlog_INCLUDE_DIRS)
-#   set(spdlog_INCLUDE_DIRS ${PROJECT_LIB_DIR}/spdlog/include)
-# endif()
-# # 输出spdlog库的目录看看
-# message(STATUS "spdlog_INCLUDE_DIRS = " ${spdlog_INCLUDE_DIRS})
+# 设置dlog库的库目录,x64版本
+if(WIN32)
+    if(NOT DEFINED dlog_LIB_DIR)
+        set(dlog_LIB_DIR ${PROJECT_LIB_DIR}/dlog/x64)
+    endif()
+    set(dlog_LIB ${dlog_LIB_DIR}/dlog.lib)
+    #拷贝dlog.dll到安装目录
+    # add_custom_command(TARGET app POST_BUILD        # Adds a post-build event to MyTest
+    #     COMMAND ${CMAKE_COMMAND} -E copy_if_different  # which executes "cmake - E copy_if_different..."
+    #         "${PROJECT_LIB_DIR}/dlog/x64/dlog.dll"      # <--this is in-file
+    #         ${CMAKE_INSTALL_PREFIX}/dlog.dll)                 # <--this is out-file path
+    
+    # 这里的复制没有太好的方法,因为vs会自己多出Release文件夹来,只能把文件夹名字写死了
+    # https://stackoverflow.com/questions/10671916/how-to-copy-dll-files-into-the-same-folder-as-the-executable-using-cmake?rq=1
+    # https://stackoverflow.com/questions/39282430/how-to-get-current-configuration-release-debug-in-cmake-for-visual-studio
+    add_custom_command(TARGET app POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dlog_LIB_DIR}/dlog.dll" ${EXECUTABLE_OUTPUT_PATH}/Release/dlog.dll)
+    add_custom_command(TARGET app POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dlog_LIB_DIR}/dlog.dll" ${EXECUTABLE_OUTPUT_PATH}/RelWithDebInfo/dlog.dll)
+else()
+    if(NOT DEFINED dlog_LIB_DIR)
+        set(dlog_LIB_DIR ${PROJECT_LIB_DIR}/dlog)
+    endif()
+    set(dlog_LIB ${dlog_LIB_DIR}/libdlog.a)  
+    # 其他平台目前是静态编译的，就没有拷贝dll
+endif()
+if(CROSS_COMPILE)
+    set(dlog_LIB ${dlog_LIB_DIR}_arm64/libdlog.a)
+endif()
+message(STATUS "dlog_LIB = " ${dlog_LIB})
 
 find_package(Boost 1.70.0 REQUIRED COMPONENTS filesystem date_time)
 message(STATUS "Boost_INCLUDE_DIRS = " ${Boost_INCLUDE_DIRS})
 message(STATUS "Boost_LIBRARIES = " ${Boost_LIBRARIES})
 
+find_package (Threads)
+
 # Dependencies
 target_include_directories(test.out PRIVATE ${CMAKE_SOURCE_DIR} ${PROJECT_LIB_DIR} ${Boost_INCLUDE_DIRS})
-target_link_libraries(test.out PRIVATE ${Boost_LIBRARIES} gtest gtest_main)
+target_link_libraries(test.out PRIVATE ${dlog_LIB} ${Boost_LIBRARIES} gtest gtest_main ${CMAKE_THREAD_LIBS_INIT})
 
 add_test(NAME AllCppTest COMMAND test.out)
 

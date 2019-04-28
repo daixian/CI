@@ -1,30 +1,7 @@
 cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 
-# BUILD_SHARED_LIBS can controll build type!
-
 set(CMAKE_CXX_STANDARD 14)
-
-# 隐藏导出函数这个确实是有效的，但是目前看来隐藏它并没有什么意义，会导致测试工程找不到函数还
-# set(CMAKE_CXX_VISIBILITY_PRESET hidden)
-# set(CMAKE_C_VISIBILITY_PRESET hidden)
-
-add_definitions(-D DLOG_EXPORTS)
-add_definitions(-D UNICODE)
-if(WIN32)
-  add_definitions(-D _WINDOWS)
-  add_definitions(-D _USERDLL)
-endif()
-
-# Introduce variables: * CMAKE_INSTALL_LIBDIR * CMAKE_INSTALL_BINDIR *
-# CMAKE_INSTALL_INCLUDEDIR
-
-# Layout. This works for all platforms: * <prefix>/lib*/cmake/<PROJECT-NAME> *
-# <prefix>/lib*/ * <prefix>/include/
-set(config_install_dir "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
-
-add_executable(app main.cpp)
-
-message(STATUS "CMAKE_CFG_INTDIR = " ${CMAKE_CFG_INTDIR})
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 设置dlog库的库目录,x64版本
 if(WIN32)
@@ -32,7 +9,6 @@ if(WIN32)
         set(dlog_LIB_DIR ${PROJECT_LIB_DIR}/dlog/x64)
     endif()
     set(dlog_LIB ${dlog_LIB_DIR}/dlog.lib)
-    message(STATUS "dlog_LIB = " ${dlog_LIB})
     #拷贝dlog.dll到安装目录
     # add_custom_command(TARGET app POST_BUILD        # Adds a post-build event to MyTest
     #     COMMAND ${CMAKE_COMMAND} -E copy_if_different  # which executes "cmake - E copy_if_different..."
@@ -50,10 +26,13 @@ else()
     if(NOT DEFINED dlog_LIB_DIR)
         set(dlog_LIB_DIR ${PROJECT_LIB_DIR}/dlog)
     endif()
-    set(dlog_LIB ${dlog_LIB_DIR}/libdlog.a)
-    message(STATUS "dlog_LIB = " ${dlog_LIB})
+    set(dlog_LIB ${dlog_LIB_DIR}/libdlog.a)  
     # 其他平台目前是静态编译的，就没有拷贝dll
 endif()
+if(CROSS_COMPILE)
+    set(dlog_LIB ${dlog_LIB_DIR}_arm64/libdlog.a)
+endif()
+message(STATUS "dlog_LIB = " ${dlog_LIB})
 
 # 设置boost库
 find_package(Boost 1.70.0 REQUIRED COMPONENTS filesystem date_time)
@@ -72,11 +51,16 @@ if(WIN32)
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${OpenCV_LIBS_DIR}" ${EXECUTABLE_OUTPUT_PATH}/RelWithDebInfo)
 endif()
 
-target_include_directories(app PRIVATE ${CMAKE_SOURCE_DIR} ${PROJECT_LIB_DIR} ${Boost_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
-target_link_libraries(app PRIVATE ${dlog_LIB} ${Boost_LIBRARIES} ${OpenCV_LIBS})
+find_package (Threads)
+
+#这里的命名需要有.out,否则编译arm的时候不能运行...
+add_executable(app.out main.cpp)
+
+target_include_directories(app.out PRIVATE ${CMAKE_SOURCE_DIR} ${PROJECT_LIB_DIR} ${Boost_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
+target_link_libraries(app.out PRIVATE ${dlog_LIB} ${Boost_LIBRARIES} ${OpenCV_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 
 # 全都安装到根目录
-install(TARGETS app
+install(TARGETS app.out
        RUNTIME DESTINATION "./"
        LIBRARY DESTINATION "./"
        ARCHIVE DESTINATION "./"

@@ -209,6 +209,20 @@ def download_dlog_linux():
     print("done!\r\n")
 
 
+def download_dlog_arm():
+    '''下载库 dlog'''
+    print("download dlog ...")
+    url = "http://xuexuesoft.com/files/build/linux/arm/dlog_arm64.zip"
+    downloadFile = dirDownload + "/dlog_arm64.zip"
+    download_with_cache(url, downloadFile)
+
+    print("extract start ...")
+    if os.path.exists(dirLib+"/dlog_arm64"):
+        shutil.rmtree(dirLib + "/dlog_arm64")
+    extract_zip(downloadFile, dirLib)
+    print("done!\r\n")
+
+
 def download_boost():
     '''下载库 boost'''
     print("download boost ...")
@@ -381,6 +395,7 @@ def download_opencv3():
         extract_zip(downloadFile, dirLib)
     print("done!\r\n")
 
+
 def download_opencv3_linux():
     '''下载库 opencv3 linux'''
     print("download opencv3 linux ...")
@@ -391,7 +406,21 @@ def download_opencv3_linux():
     if os.path.exists(dirLib + "/opencv-3.4.6"):
         print("dir exists,don't extract!")
     else:
-        # shutil.rmtree(dirLib + "/boost_1_70_0")
+        print("extract start ...")
+        extract_zip(downloadFile, dirLib)
+    print("done!\r\n")
+
+
+def download_opencv3_arm():
+    '''下载库 opencv3 arm'''
+    print("download opencv3 arm ...")
+    url = "http://xuexuesoft.com/files/build/linux/arm/opencv-3.4.6_arm64.zip"
+    downloadFile = dirDownload + "/opencv-3.4.6_arm64.zip"
+    download_with_cache(url, downloadFile)
+
+    if os.path.exists(dirLib + "/opencv-3.4.6_arm64"):
+        print("dir exists,don't extract!")
+    else:
         print("extract start ...")
         extract_zip(downloadFile, dirLib)
     print("done!\r\n")
@@ -474,7 +503,7 @@ def main(argv):
             elif (platform == "linux"):
                 download_dlog_linux()
             elif (platform == "arm"):
-                download_dlog_linux()
+                download_dlog_arm()
 
         elif (arg == "boost"):
             if (platform == "windows"):
@@ -510,6 +539,8 @@ def main(argv):
                 download_opencv3()
             elif (platform == "linux"):
                 download_opencv3_linux()
+            elif (platform == "arm"):
+                download_opencv3_arm
 
 
 if __name__ == "__main__":

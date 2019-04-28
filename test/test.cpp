@@ -1,4 +1,6 @@
 ﻿#include "pch.h"
+#include "boost/filesystem.hpp"
+#include "dlog_arm64/dlog.h"
 
 #if defined(_WIN32) || defined(_WIN64)
 
@@ -11,5 +13,14 @@ using namespace std;
 
 TEST(app, test)
 {
+    namespace fs = boost::filesystem;
+    fs::create_directories("./123");
+    ASSERT_TRUE(true);
+}
+
+TEST(app, test2)
+{
+    dlog_init();
+    LogI("21313131212312");
     ASSERT_TRUE(true);
 }

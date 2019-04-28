@@ -1,11 +1,12 @@
-﻿#include <stdio.h>
+﻿#include <cstdio>
 #include "dlog/dlog.h"
 #include "opencv2/opencv.hpp"
 
 //#pragma execution_character_set("GB2312") 这个头定义不需要,但是要注意定义bom头
 
-int main(int argc, char const *argv[])
+int main(int argc, char **argv)
 {
+    printf("Running main() from %s\n", __FILE__);
     dlog_init("log", "main", dlog_init_relative::MODULE);
     for (size_t i = 0; i < 10; i++) {
         LogI("log %d", i);

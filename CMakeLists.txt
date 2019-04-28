@@ -76,12 +76,13 @@ if(WIN32)
 else()
     set(OpenCV_DIR ${PROJECT_LIB_DIR}/opencv-3.4.6/install/share/OpenCV)
 endif()
+if(CROSS_COMPILE)
+    set(OpenCV_DIR ${PROJECT_LIB_DIR}/opencv-3.4.6_arm64/install/share/OpenCV)
+endif()
 message(STATUS "OpenCV_DIR = " ${OpenCV_DIR})
 
 # 使能测试
 enable_testing()
-
-add_subdirectory(app)
 
 # 这里要添加gtest，这样就会去编译gtest然后设置了一些变量
 # 添加gtest前尝试设置一下编译选项为MD
@@ -90,6 +91,8 @@ add_subdirectory(app)
 #set(CMAKE_CXX_FLAGS_DEBUG "/MDd")
 #endif()
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/gtest)
+
+add_subdirectory(app)
 
 include(CTest)
 #include(GoogleTest)
