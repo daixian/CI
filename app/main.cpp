@@ -11,7 +11,8 @@ int main(int argc, char const *argv[])
         LogI("log %d", i);
         LogI("输出一条日志 %d", i);
     }
-
-    //cv::imshow()
+    cv::Mat img(600, 800, CV_8UC3, cv::Scalar(0, 255, 0));
+    cv::imshow("123", img);
+    cv::waitKey();
     return 0;
 }
