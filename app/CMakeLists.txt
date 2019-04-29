@@ -3,6 +3,12 @@ cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
+set(SUB_NAME "app.out")
+
+#这里的命名需要有.out,否则编译arm的时候不能运行...
+add_executable(${SUB_NAME} main.cpp)
+
 # 设置dlog库的库目录,x64版本
 if(WIN32)
     if(NOT DEFINED dlog_LIB_DIR)
@@ -18,9 +24,9 @@ if(WIN32)
     # 这里的复制没有太好的方法,因为vs会自己多出Release文件夹来,只能把文件夹名字写死了
     # https://stackoverflow.com/questions/10671916/how-to-copy-dll-files-into-the-same-folder-as-the-executable-using-cmake?rq=1
     # https://stackoverflow.com/questions/39282430/how-to-get-current-configuration-release-debug-in-cmake-for-visual-studio
-    add_custom_command(TARGET app POST_BUILD
+    add_custom_command(TARGET ${SUB_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dlog_LIB_DIR}/dlog.dll" ${EXECUTABLE_OUTPUT_PATH}/Release/dlog.dll)
-    add_custom_command(TARGET app POST_BUILD
+    add_custom_command(TARGET ${SUB_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dlog_LIB_DIR}/dlog.dll" ${EXECUTABLE_OUTPUT_PATH}/RelWithDebInfo/dlog.dll)
 else()
     if(NOT DEFINED dlog_LIB_DIR)
@@ -45,22 +51,19 @@ message(STATUS "OpenCV_INCLUDE_DIRS = " ${OpenCV_INCLUDE_DIRS})
 message(STATUS "OpenCV_LIBS = " ${OpenCV_LIBS})
 if(WIN32)
     set(OpenCV_LIBS_DIR ${OpenCV_DIR}/x64/vc15/bin)
-    add_custom_command(TARGET app POST_BUILD
+    add_custom_command(TARGET ${SUB_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${OpenCV_LIBS_DIR}" ${EXECUTABLE_OUTPUT_PATH}/Release) #拷贝整个文件夹算了
-    add_custom_command(TARGET app POST_BUILD
+    add_custom_command(TARGET ${SUB_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${OpenCV_LIBS_DIR}" ${EXECUTABLE_OUTPUT_PATH}/RelWithDebInfo)
 endif()
 
 find_package (Threads)
 
-#这里的命名需要有.out,否则编译arm的时候不能运行...
-add_executable(app.out main.cpp)
-
-target_include_directories(app.out PRIVATE ${CMAKE_SOURCE_DIR} ${PROJECT_LIB_DIR} ${Boost_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
-target_link_libraries(app.out PRIVATE ${dlog_LIB} ${Boost_LIBRARIES} ${OpenCV_LIBS} ${CMAKE_THREAD_LIBS_INIT})
+target_include_directories(${SUB_NAME} PRIVATE ${CMAKE_SOURCE_DIR} ${PROJECT_LIB_DIR} ${Boost_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
+target_link_libraries(${SUB_NAME} PRIVATE ${dlog_LIB} ${Boost_LIBRARIES} ${OpenCV_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 
 # 全都安装到根目录
-install(TARGETS app.out
+install(TARGETS ${SUB_NAME}
        RUNTIME DESTINATION "./"
        LIBRARY DESTINATION "./"
        ARCHIVE DESTINATION "./"

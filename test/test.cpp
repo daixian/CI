@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "boost/filesystem.hpp"
-#include "dlog_arm64/dlog.h"
+#include "dlog/dlog.h"
 
 #if defined(_WIN32) || defined(_WIN64)
 

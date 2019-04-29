@@ -4,7 +4,8 @@ cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(test.out pch.h pch.cpp test.cpp)
+set(SUB_NAME "test.out")
+add_executable(${SUB_NAME} pch.h pch.cpp test.cpp)
 
 # Prevent GoogleTest from overriding our compiler/linker options
 # when building with Visual Studio
@@ -31,10 +32,10 @@ if(WIN32)
     # 这里的复制没有太好的方法,因为vs会自己多出Release文件夹来,只能把文件夹名字写死了
     # https://stackoverflow.com/questions/10671916/how-to-copy-dll-files-into-the-same-folder-as-the-executable-using-cmake?rq=1
     # https://stackoverflow.com/questions/39282430/how-to-get-current-configuration-release-debug-in-cmake-for-visual-studio
-    add_custom_command(TARGET app POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dlog_LIB_DIR}/dlog.dll" ${EXECUTABLE_OUTPUT_PATH}/Release/dlog.dll)
-    add_custom_command(TARGET app POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dlog_LIB_DIR}/dlog.dll" ${EXECUTABLE_OUTPUT_PATH}/RelWithDebInfo/dlog.dll)
+    # add_custom_command(TARGET app POST_BUILD
+    # COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dlog_LIB_DIR}/dlog.dll" ${EXECUTABLE_OUTPUT_PATH}/Release/dlog.dll)
+    # add_custom_command(TARGET app POST_BUILD
+    # COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dlog_LIB_DIR}/dlog.dll" ${EXECUTABLE_OUTPUT_PATH}/RelWithDebInfo/dlog.dll)
 else()
     if(NOT DEFINED dlog_LIB_DIR)
         set(dlog_LIB_DIR ${PROJECT_LIB_DIR}/dlog)
@@ -54,10 +55,10 @@ message(STATUS "Boost_LIBRARIES = " ${Boost_LIBRARIES})
 find_package (Threads)
 
 # Dependencies
-target_include_directories(test.out PRIVATE ${CMAKE_SOURCE_DIR} ${PROJECT_LIB_DIR} ${Boost_INCLUDE_DIRS})
-target_link_libraries(test.out PRIVATE ${dlog_LIB} ${Boost_LIBRARIES} gtest gtest_main ${CMAKE_THREAD_LIBS_INIT})
+target_include_directories(${SUB_NAME} PRIVATE ${CMAKE_SOURCE_DIR} ${PROJECT_LIB_DIR} ${Boost_INCLUDE_DIRS})
+target_link_libraries(${SUB_NAME} PRIVATE ${dlog_LIB} ${Boost_LIBRARIES} gtest gtest_main ${CMAKE_THREAD_LIBS_INIT})
 
-add_test(NAME AllCppTest COMMAND test.out)
+add_test(NAME AllCppTest COMMAND ${SUB_NAME})
 
 
 # 这是vcpkg时候的写法
