@@ -12,8 +12,24 @@ int main(int argc, char **argv)
         LogI("log %d", i);
         LogI("输出一条日志 %d", i);
     }
-    cv::Mat img(600, 800, CV_8UC3, cv::Scalar(0, 255, 0));
-    cv::imshow("123", img);
-    cv::waitKey();
+
+#pragma omp parallel sections //并行区域
+    {
+#pragma omp section //负责这个区域的线程对前面部分进行排序
+        while (true) {
+        }
+#pragma omp section //负责这个区域的线程对后面部分进行排序
+        while (true) {
+        }
+#pragma omp section //负责这个区域的线程对后面部分进行排序
+        while (true) {
+        }
+#pragma omp section //负责这个区域的线程对后面部分进行排序
+        while (true) {
+        }
+#pragma omp section //负责这个区域的线程对后面部分进行排序
+        while (true) {
+        }
+    }
     return 0;
 }

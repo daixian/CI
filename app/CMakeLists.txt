@@ -57,7 +57,15 @@ if(WIN32)
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${OpenCV_LIBS_DIR}" ${EXECUTABLE_OUTPUT_PATH}/RelWithDebInfo)
 endif()
 
-find_package (Threads)
+find_package(Threads)
+
+find_package(OpenMP REQUIRED)
+if(OPENMP_FOUND)
+    message("OpenMP found!")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+endif()
 
 target_include_directories(${SUB_NAME} PRIVATE ${CMAKE_SOURCE_DIR} ${PROJECT_LIB_DIR} ${Boost_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(${SUB_NAME} PRIVATE ${dlog_LIB} ${Boost_LIBRARIES} ${OpenCV_LIBS} ${CMAKE_THREAD_LIBS_INIT})
