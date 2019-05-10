@@ -13,15 +13,17 @@ int main(int argc, char **argv)
 {
     printf("Running main() from %s\n", __FILE__);
     dlog_init("log", "main", dlog_init_relative::MODULE);
-    for (size_t i = 0; i < 10; i++) {
-        LogI("log %d", i);
-        LogI("输出一条日志 %d", i);
-    }
+    // for (size_t i = 0; i < 10; i++) {
+    //     LogI("log %d", i);
+    //     LogI("输出一条日志 %d", i);
+    // }
 
     dxlib::CoolTime ct[5];
     for (size_t i = 0; i < 5; i++) {
         ct[i].CD = 10;
     }
+
+    boost::asio::post(pool, ct[0].isDone());
 
     boost::asio::post(pool,
                       []() {
