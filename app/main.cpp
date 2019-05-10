@@ -3,8 +3,11 @@
 #include "opencv2/opencv.hpp"
 #include "concurrentqueue/concurrentqueue.h"
 #include "CoolTime.hpp"
+#include <boost/asio.hpp>
 
 //#pragma execution_character_set("GB2312") 这个头定义不需要,但是要注意定义bom头
+
+boost::asio::thread_pool pool(4);
 
 int main(int argc, char **argv)
 {
@@ -14,6 +17,23 @@ int main(int argc, char **argv)
         LogI("log %d", i);
         LogI("输出一条日志 %d", i);
     }
+
+    boost::asio::post(pool,
+                      []() {
+                          while (true) {
+                              LogI("输出一条日志 task1");
+                          }
+                      });
+
+    boost::asio::post(pool,
+                      []() {
+                          while (true) {
+                              LogI("输出一条日志 task2");
+                          }
+                      });
+
+    LogI("等待执行结束"); //等待执行结束
+    pool.join();
 
     moodycamel::ConcurrentQueue<std::string> queue[4];
     long long count[4] = {0, 0, 0, 0};
