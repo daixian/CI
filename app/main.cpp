@@ -18,17 +18,42 @@ int main(int argc, char **argv)
         LogI("输出一条日志 %d", i);
     }
 
+    dxlib::CoolTime ct[5];
+    for (size_t i = 0; i < 5; i++) {
+        ct[i].CD = 10;
+    }
+
     boost::asio::post(pool,
                       []() {
                           while (true) {
-                              LogI("输出一条日志 task1");
+                              //LogI("输出一条日志 task1");
                           }
                       });
 
     boost::asio::post(pool,
                       []() {
                           while (true) {
-                              LogI("输出一条日志 task2");
+                              //LogI("输出一条日志 task2");
+                          }
+                      });
+
+    boost::asio::post(pool,
+                      []() {
+                          while (true) {
+                              //LogI("输出一条日志 task3");
+                          }
+                      });
+
+    boost::asio::post(pool,
+                      []() {
+                          while (true) {
+                              // LogI("输出一条日志 task4");
+                          }
+                      });
+    boost::asio::post(pool,
+                      []() {
+                          while (true) {
+                              // LogI("输出一条日志 task5");
                           }
                       });
 
@@ -37,10 +62,6 @@ int main(int argc, char **argv)
 
     moodycamel::ConcurrentQueue<std::string> queue[4];
     long long count[4] = {0, 0, 0, 0};
-    dxlib::CoolTime ct[5];
-    for (size_t i = 0; i < 5; i++) {
-        ct[i].CD = 10;
-    }
 
     LogI("开始执行并行实验！");
 #pragma omp parallel sections //并行区域
