@@ -23,39 +23,43 @@ int main(int argc, char **argv)
         ct[i].CD = 10;
     }
 
-    boost::asio::post(pool, ct[0].isDone());
-
+    //boost::asio::post(pool, );
     boost::asio::post(pool,
-                      []() {
+                      [&]() {
                           while (true) {
-                              //LogI("输出一条日志 task1");
+                              if (ct[0].isDone())
+                                  LogI("输出一条日志 task1");
                           }
                       });
 
     boost::asio::post(pool,
-                      []() {
+                      [&]() {
                           while (true) {
-                              //LogI("输出一条日志 task2");
+                              if (ct[1].isDone())
+                                  LogI("输出一条日志 task2");
                           }
                       });
 
     boost::asio::post(pool,
-                      []() {
+                      [&]() {
                           while (true) {
-                              //LogI("输出一条日志 task3");
+                              if (ct[2].isDone())
+                                  LogI("输出一条日志 task3");
                           }
                       });
 
     boost::asio::post(pool,
-                      []() {
+                      [&]() {
                           while (true) {
-                              // LogI("输出一条日志 task4");
+                              if (ct[3].isDone())
+                                  LogI("输出一条日志 task4");
                           }
                       });
     boost::asio::post(pool,
-                      []() {
+                      [&]() {
                           while (true) {
-                              // LogI("输出一条日志 task5");
+                              if (ct[4].isDone())
+                                  LogI("输出一条日志 task5");
                           }
                       });
 
