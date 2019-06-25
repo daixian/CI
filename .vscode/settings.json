@@ -1,4 +1,9 @@
 {
+    "files.watcherExclude": {
+        "**/build/": true,
+        "**/lib/": true,
+        "**/bin/": true,
+    },
     "C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools",
     "cmake.buildDirectory": "${workspaceRoot}/build/Win64",
     // 注意kit和generator是两个东西,只能在这里设置这个generator,windows平台已经把这个设置到了全局设置里
@@ -9,5 +14,5 @@
         "-Dgtest_force_shared_crt:BOOL=1",
         "-DBUILD_TESTING:BOOL=0",
         "-DENABLE_TEST:BOOL=1",
-    ]
+    ],
 }

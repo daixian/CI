@@ -27,8 +27,23 @@ def extract_zip(zfile_path, unzip_dir):
     description:
     '''
     try:
-        with zipfile.ZipFile(zfile_path) as zfile:
-            zfile.extractall(path=unzip_dir)
+        if not os.path.exists(unzip_dir):
+            os.makedirs(unzip_dir)
+        # with zipfile.ZipFile(zfile_path) as zfile:
+        #     zfile.extractall(path=unzip_dir) 直接all会中文乱码
+        with zipfile.ZipFile(zfile_path, 'r') as zf:
+            for fn in zf.namelist():
+                right_fn = os.path.join(unzip_dir, fn.encode(
+                    'cp437').decode('gbk'))  # 将文件名正确编码
+                if (right_fn.endswith('/')):
+                    if os.path.exists(right_fn):
+                        shutil.rmtree(right_fn)
+                    os.makedirs(right_fn)
+                else:
+                    with open(right_fn, 'wb') as output_file:  # 创建并打开新文件
+                        with zf.open(fn, 'r') as origin_file:  # 打开原文件
+                            shutil.copyfileobj(
+                                origin_file, output_file)  # 将原文件内容复制到新文件
     except zipfile.BadZipFile as e:
         print(zfile_path+"unzip error"+e)
 
