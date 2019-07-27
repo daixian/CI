@@ -168,7 +168,7 @@ int Cache::addCacheData(const std::string& name, const std::vector<char> data)
 {
     SQLite::Database& db = *(_impl->db);
     SQLite::Statement query(db, "INSERT INTO sht_data VALUES (NULL,?,?)");
-    query.bind(1, name);                     //数据名字
+    query.bind(1, name);                           //数据名字
     query.bindNoCopy(2, data.data(), data.size()); //byte数据,注意这里使用了不Copy的方法,需要保证data的生命周期
     int nb = query.exec();
     return nb;
@@ -196,6 +196,19 @@ int Cache::clearCacheData()
     db.exec("DROP TABLE IF EXISTS sht_data");
     //重新创建陕昊天使用的表
     return db.exec("CREATE TABLE sht_data (id INTEGER PRIMARY KEY, data_name TEXT, data_byte BLOB)");
+}
+
+int Cache::countCacheData()
+{
+    SQLite::Database& db = *(_impl->db);
+    SQLite::Statement querybr(db, "SELECT count(*) FROM sht_data");
+    while (querybr.executeStep()) {
+        if (querybr.getColumn(0).isInteger()) {
+            int count = querybr.getColumn(0).getInt();                  
+            return count;
+        }
+    }
+    return 0;
 }
 
 } // namespace sht

@@ -52,6 +52,9 @@ int main()
     printf("(批量)写1024*10次,耗时%f秒", (float)(clock() - t0) / CLOCKS_PER_SEC);
     getchar();
 
+    int count = Cache::GetInst()->countCacheData();
+    printf("当前数据库里有%d条记录", count);
+    getchar();
     Cache::GetInst()->closeDB();
 }
 
