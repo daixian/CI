@@ -169,7 +169,7 @@ int Cache::addCacheData(const std::string& name, const std::vector<char> data)
     SQLite::Database& db = *(_impl->db);
     SQLite::Statement query(db, "INSERT INTO sht_data VALUES (NULL,?,?)");
     query.bind(1, name);                     //数据名字
-    query.bind(2, data.data(), data.size()); //byte数据
+    query.bindNoCopy(2, data.data(), data.size()); //byte数据,注意这里使用了不Copy的方法,需要保证data的生命周期
     int nb = query.exec();
     return nb;
 }
