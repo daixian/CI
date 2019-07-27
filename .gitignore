@@ -16,3 +16,5 @@ lib/
 bin/
 
 SqliteTest/SqliteTest/x64/
+
+SqliteTest/SqliteTest/\.vs/
