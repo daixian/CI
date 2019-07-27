@@ -5,6 +5,17 @@
 
 namespace dxlib {
 
+///-------------------------------------------------------------------------------------------------
+/// <summary> 一个数据库的普通类. </summary>
+///
+/// <remarks>
+/// SQLite的db3文件的查看工具软件，已经替换了加密版sqlite3.dll文件，运行里面的DB
+/// Browser for SQLCipher.exe
+/// http://xuexuesoft.com/files/soft/DB%20Browser%20for%20SQLite.zip
+/// 
+/// Dx, 2019/7/27.
+/// </remarks>
+///-------------------------------------------------------------------------------------------------
 class DataBase
 {
   public:
