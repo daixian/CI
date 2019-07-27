@@ -361,6 +361,19 @@ def download_rclapi():
 
     print("done!\r\n")
 
+def download_sqlitecpp():
+    '''下载库 sqlitecpp'''
+    print("download sqlitecpp ...")
+    url = "http://mr.xuexuesoft.com:8010/build/SQLiteCpp_190501.zip"
+    downloadFile = dirDownload + "/SQLiteCpp_190501.zip"
+    download_with_cache(url, downloadFile)
+
+    print("extract start ...")
+    if os.path.exists(dirLib+"/SQLiteCpp"):
+        shutil.rmtree(dirLib+"/SQLiteCpp")
+    extract_zip(downloadFile, dirLib)
+
+    print("done!\r\n")
 
 def download_xuexueutility():
     '''下载库 xuexue.utility'''
@@ -542,6 +555,9 @@ def main(argv):
 
         elif (arg == "rclapi"):
             download_rclapi()
+
+        elif (arg == "sqlitecpp"):
+            download_sqlitecpp()
 
         elif (arg == "xuexueutility"):
             download_xuexueutility()
