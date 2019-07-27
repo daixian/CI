@@ -11,6 +11,8 @@ gtest/
 
 dlog/
 
-build/
+/build/
 lib/
 bin/
+
+SqliteTest/SqliteTest/x64/
