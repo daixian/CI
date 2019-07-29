@@ -171,7 +171,7 @@ int Cache::addCacheData(const Item& item)
     query.bind(1, item.frameNum);
     query.bind(2, item.setName);
     query.bind(3, item.setType);
-    query.bindNoCopy(4, item.data.data(), item.data.size()); //byte数据,注意这里使用了不Copy的方法,需要保证data的生命周期
+    query.bind(4, item.data.data(), item.data.size()); //byte数据,注意这里使用了不Copy的方法,需要保证data的生命周期(算了这里还是安全重要,又改回了Copy的方法)
     int nb = query.exec();
     return nb;
 }
