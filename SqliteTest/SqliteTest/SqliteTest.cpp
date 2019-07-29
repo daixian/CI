@@ -12,9 +12,10 @@ int main()
     using namespace std;
     namespace fs = boost::filesystem;
 
-    vector<char> data;
+    Cache::Item item{1, "123", "type1"};
+
     for (size_t i = 0; i < 1024; i++) {
-        data.push_back((char)i);
+        item.data.push_back((char)i);
     }
     fs::path dbPath = "cache.db3";
     if (fs::is_regular_file(dbPath)) {
@@ -25,19 +26,22 @@ int main()
     int res = Cache::GetInst()->creatNewDB(dbPath.string());
 
     //写一个123命名的数据
-    res = Cache::GetInst()->addCacheData("123", data);
+    res = Cache::GetInst()->addCacheData(item);
 
     //读这个123命名的数据
-    vector<char> data2;
-    res = Cache::GetInst()->getCacheData("123", data2);
+    Cache::Item item2{1, "123"};
+
+    res = Cache::GetInst()->getCacheData(item2);
 
     res = Cache::GetInst()->clearCacheData();
 
-    res = Cache::GetInst()->getCacheData("123", data2);
+    res = Cache::GetInst()->getCacheData(item2);
 
     clock_t t0 = clock();
     for (size_t i = 0; i < 1024 * 10; i++) {
-        res = Cache::GetInst()->addCacheData("123", data);
+        Cache::Item itemCopy = item;
+        itemCopy.frameNum = i;
+        res = Cache::GetInst()->addCacheData(itemCopy);
     }
     printf("写1024*10次,耗时%f秒", (float)(clock() - t0) / CLOCKS_PER_SEC);
     getchar();
@@ -46,7 +50,9 @@ int main()
     t0 = clock(); //重新计时
     Cache::GetInst()->exec("begin;");
     for (size_t i = 0; i < 1024 * 10; i++) {
-        res = Cache::GetInst()->addCacheData("123", data);
+        Cache::Item itemCopy = item;
+        itemCopy.frameNum = i;
+        res = Cache::GetInst()->addCacheData(itemCopy);
     }
     Cache::GetInst()->exec("commit;");
     printf("(批量)写1024*10次,耗时%f秒", (float)(clock() - t0) / CLOCKS_PER_SEC);

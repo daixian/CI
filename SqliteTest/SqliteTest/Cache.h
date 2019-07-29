@@ -24,6 +24,29 @@ class Cache
     std::string key = "12345678";
 
     ///-------------------------------------------------------------------------------------------------
+    /// <summary> 一项纪录. </summary>
+    ///
+    /// <remarks> Dx, 2019/7/29. </remarks>
+    ///-------------------------------------------------------------------------------------------------
+    class Item
+    {
+      public:
+        Item()
+        {}
+        Item(int frameNum, const std::string setName) : frameNum(frameNum), setName(setName)
+        {
+        }
+        Item(int frameNum, const std::string setName, const std::string setType) : frameNum(frameNum), setName(setName), setType(setType)
+        {
+        }
+
+        int frameNum;
+        std::string setName;
+        std::string setType;
+        std::vector<char> data;
+    };
+
+    ///-------------------------------------------------------------------------------------------------
     /// <summary> 是否数据库已经打开了. </summary>
     ///
     /// <remarks> Dx, 2019/3/12. </remarks>
@@ -92,24 +115,22 @@ class Cache
     ///
     /// <remarks> Dx, 2019/7/26. </remarks>
     ///
-    /// <param name="name"> The name. </param>
-    /// <param name="data"> The data. </param>
+    /// <param name="item"> The frame number. </param>
     ///
     /// <returns> An int. </returns>
     ///-------------------------------------------------------------------------------------------------
-    int addCacheData(const std::string& name, const std::vector<char> data);
+    int addCacheData(const Item& item);
 
     ///-------------------------------------------------------------------------------------------------
     /// <summary> Gets a data. </summary>
     ///
     /// <remarks> Dx, 2019/7/26. </remarks>
     ///
-    /// <param name="name"> The name. </param>
-    /// <param name="data"> The data. </param>
+    /// <param name="item"> [in,out] 先存好需要依据的查询内容,查询补上data. </param>
     ///
     /// <returns> The data. </returns>
     ///-------------------------------------------------------------------------------------------------
-    int getCacheData(const std::string& name, std::vector<char>& data);
+    int getCacheData(Item& item);
 
     ///-------------------------------------------------------------------------------------------------
     /// <summary> 清空cache表. </summary>

@@ -67,7 +67,7 @@ int Cache::creatNewDB(const std::string& path)
         //删除存在的表
         db.exec("DROP TABLE IF EXISTS sht_data");
         //陕昊天使用的表(一个数据名,一个二进制数据)
-        db.exec("CREATE TABLE sht_data (id INTEGER PRIMARY KEY, data_name TEXT, data_byte BLOB)");
+        db.exec("CREATE TABLE sht_data (id INTEGER PRIMARY KEY, frame_num INTEGER, set_name TEXT, set_type TEXT, data_byte BLOB)");
 
         //去掉多线程安全锁提高速度,需要保证单线程访问
         db.exec("PRAGMA synchronous = OFF;");
@@ -164,29 +164,43 @@ int Cache::exec(const std::string& sql)
     return _impl->db->exec(sql);
 }
 
-int Cache::addCacheData(const std::string& name, const std::vector<char> data)
+int Cache::addCacheData(const Item& item)
 {
     SQLite::Database& db = *(_impl->db);
-    SQLite::Statement query(db, "INSERT INTO sht_data VALUES (NULL,?,?)");
-    query.bind(1, name);                           //数据名字
-    query.bindNoCopy(2, data.data(), data.size()); //byte数据,注意这里使用了不Copy的方法,需要保证data的生命周期
+    SQLite::Statement query(db, "INSERT INTO sht_data VALUES (NULL,?,?,?,?)");
+    query.bind(1, item.frameNum);
+    query.bind(2, item.setName);
+    query.bind(3, item.setType);
+    query.bindNoCopy(4, item.data.data(), item.data.size()); //byte数据,注意这里使用了不Copy的方法,需要保证data的生命周期
     int nb = query.exec();
     return nb;
 }
 
-int Cache::getCacheData(const std::string& name, std::vector<char>& data)
+int Cache::getCacheData(Item& item)
 {
     using namespace dxlib;
 
     SQLite::Database& db = *(_impl->db);
+    string sql = (boost::format("SELECT data_byte FROM sht_data WHERE frame_num='%d'") % item.frameNum).str();
 
-    std::string table_name = "sht_data";
-    std::string where_col_name = "data_name";
-    std::string where_row_value = name;
+    if (!item.setName.empty() && !item.setType.empty())
+        sql = (boost::format("SELECT data_byte FROM sht_data WHERE frame_num='%d' AND set_name='%s' AND set_type='%s'") % item.frameNum % item.setName % item.setType)
+                  .str();
+    else if (!item.setName.empty() && item.setType.empty()) //如果只用了setName
+        sql = (boost::format("SELECT data_byte FROM sht_data WHERE frame_num='%d' AND set_name='%s'") % item.frameNum % item.setName)
+                  .str();
 
-    std::string json;
-    int nb = DBHelper::SELECT(_impl->db, table_name, where_col_name, where_row_value, "data_byte", data);
-    return nb;
+    //从数据库读信息
+    SQLite::Statement querybr(db, sql);
+    while (querybr.executeStep()) {
+        if (querybr.getColumn(0).isBlob()) {
+            int bytes = querybr.getColumn(0).getBytes();
+            item.data.resize(bytes);
+            memcpy_s(item.data.data(), bytes, querybr.getColumn(0).getBlob(), bytes);
+            return 1; //只选择符合的第一条
+        }
+    }
+    return 0;
 }
 
 int Cache::clearCacheData()
@@ -195,7 +209,7 @@ int Cache::clearCacheData()
     //删除存在的表
     db.exec("DROP TABLE IF EXISTS sht_data");
     //重新创建陕昊天使用的表
-    return db.exec("CREATE TABLE sht_data (id INTEGER PRIMARY KEY, data_name TEXT, data_byte BLOB)");
+    return db.exec("CREATE TABLE sht_data (id INTEGER PRIMARY KEY, frame_num INTEGER, set_name TEXT, set_type TEXT, data_byte BLOB)");
 }
 
 int Cache::countCacheData()
@@ -204,7 +218,7 @@ int Cache::countCacheData()
     SQLite::Statement querybr(db, "SELECT count(*) FROM sht_data");
     while (querybr.executeStep()) {
         if (querybr.getColumn(0).isInteger()) {
-            int count = querybr.getColumn(0).getInt();                  
+            int count = querybr.getColumn(0).getInt();
             return count;
         }
     }
