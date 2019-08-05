@@ -79,6 +79,26 @@ class DBHelper
     static int SELECT(SQLite::Database* db, const std::string& table_name,
                       const std::string& where_col_name, const std::string& where_row_value,
                       const std::string& select_col_name, std::vector<char>& value);
+
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary> Compress. </summary>
+    ///
+    /// <remarks> Dx, 2019/8/5. </remarks>
+    ///
+    /// <param name="data">         原始数据. </param>
+    /// <param name="compressData"> [out] 压缩后的数据. </param>
+    ///-------------------------------------------------------------------------------------------------
+    static void compress(const std::vector<char>& data, std::vector<char>& compressData);
+
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary> Decompress. </summary>
+    ///
+    /// <remarks> Dx, 2019/8/5. </remarks>
+    ///
+    /// <param name="compressData">   压缩数据. </param>
+    /// <param name="decompressData"> [out] 解压缩后的数据. </param>
+    ///-------------------------------------------------------------------------------------------------
+    static void decompress(const std::vector<char>& compressData, std::vector<char>& decompressData);
 };
 
 } // namespace dxlib

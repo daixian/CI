@@ -2,6 +2,11 @@
 #include <boost/format.hpp>
 //#include "dlog/dlog.h"
 
+#include <boost/iostreams/filtering_stream.hpp>
+#include <boost/iostreams/copy.hpp>
+#include <boost/iostreams/filter/zlib.hpp>
+#include <boost/iostreams/device/back_inserter.hpp>
+
 #pragma comment(lib, "SQLiteCpp.lib")
 #pragma comment(lib, "sqlite3.lib")
 
@@ -106,6 +111,22 @@ int DBHelper::SELECT(SQLite::Database* SQLiteCppDB, const std::string& table_nam
         }
     }
     return 0;
+}
+
+void DBHelper::compress(const std::vector<char>& data, std::vector<char>& compressData)
+{
+    boost::iostreams::filtering_streambuf<boost::iostreams::output> compress_out;
+    compress_out.push(boost::iostreams::zlib_compressor(boost::iostreams::zlib::best_speed));//设置是best速度
+    compress_out.push(boost::iostreams::back_inserter(compressData));
+    boost::iostreams::copy(boost::make_iterator_range(data), compress_out);
+}
+
+void DBHelper::decompress(const std::vector<char>& compressData, std::vector<char>& decompressData)
+{
+    boost::iostreams::filtering_streambuf<boost::iostreams::output> compress_out;
+    compress_out.push(boost::iostreams::zlib_decompressor());
+    compress_out.push(boost::iostreams::back_inserter(decompressData));
+    boost::iostreams::copy(boost::make_iterator_range(compressData), compress_out);
 }
 
 } // namespace dxlib
