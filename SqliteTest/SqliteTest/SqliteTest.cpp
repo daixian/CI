@@ -14,16 +14,17 @@ int main()
     using namespace std;
     namespace fs = boost::filesystem;
 
-    std::vector<char> content;
+    std::vector<int> content;
     for (size_t i = 0; i < 8888; i++) {
-        content.push_back((char)i);
+        content.push_back((int)i);
     }
     std::vector<char> compressed;
     dxlib::DBHelper::compress(content, compressed);
+    std::vector<char> compressed2;
+    dxlib::DBHelper::compress(compressed, compressed2);
+
     std::vector<char> decompressed;
     dxlib::DBHelper::decompress(compressed, decompressed);
- 
-
 
     Cache::Item item{1, "123", "type1"};
 

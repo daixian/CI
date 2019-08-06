@@ -6,6 +6,8 @@
 #include <boost/iostreams/copy.hpp>
 #include <boost/iostreams/filter/zlib.hpp>
 #include <boost/iostreams/device/back_inserter.hpp>
+#include <boost/iostreams/device/array.hpp>
+#include <boost/iostreams/stream.hpp>
 
 #pragma comment(lib, "SQLiteCpp.lib")
 #pragma comment(lib, "sqlite3.lib")
@@ -116,9 +118,21 @@ int DBHelper::SELECT(SQLite::Database* SQLiteCppDB, const std::string& table_nam
 void DBHelper::compress(const std::vector<char>& data, std::vector<char>& compressData)
 {
     boost::iostreams::filtering_streambuf<boost::iostreams::output> compress_out;
-    compress_out.push(boost::iostreams::zlib_compressor(boost::iostreams::zlib::best_speed));//设置是best速度
+    compress_out.push(boost::iostreams::zlib_compressor(boost::iostreams::zlib::best_speed)); //设置是best速度
     compress_out.push(boost::iostreams::back_inserter(compressData));
     boost::iostreams::copy(boost::make_iterator_range(data), compress_out);
+}
+
+void DBHelper::compress(const void* data, size_t byteSize, std::vector<char>& compressData)
+{
+    boost::iostreams::filtering_streambuf<boost::iostreams::output> compress_out;
+    compress_out.push(boost::iostreams::zlib_compressor(boost::iostreams::zlib::best_speed)); //设置是best速度
+    compress_out.push(boost::iostreams::back_inserter(compressData));
+
+    //创建一个内存里的流,使用数组作为设备 https://theboostcpplibraries.com/boost.iostreams-devices
+    boost::iostreams::array_source source{(char*)data, byteSize};
+    boost::iostreams::stream<boost::iostreams::array_source> dataIn{source};
+    boost::iostreams::copy(dataIn, compress_out);
 }
 
 void DBHelper::decompress(const std::vector<char>& compressData, std::vector<char>& decompressData)

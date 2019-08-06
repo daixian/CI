@@ -83,12 +83,41 @@ class DBHelper
     ///-------------------------------------------------------------------------------------------------
     /// <summary> Compress. </summary>
     ///
-    /// <remarks> Dx, 2019/8/5. </remarks>
+    /// <remarks>
+    /// 实际上关于这个压缩，如果第一次压缩的压缩率不高，那么可以尝试第二次压缩.
+    ///     Dx, 2019/8/5.
+    /// </remarks>
     ///
     /// <param name="data">         原始数据. </param>
     /// <param name="compressData"> [out] 压缩后的数据. </param>
     ///-------------------------------------------------------------------------------------------------
     static void compress(const std::vector<char>& data, std::vector<char>& compressData);
+
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary> Compress. </summary>
+    ///
+    /// <remarks> Dx, 2019/8/6. </remarks>
+    ///
+    /// <param name="data">         原始数据起始. </param>
+    /// <param name="byteSize">     数据的字节大小. </param>
+    /// <param name="compressData"> [out] 压缩后的数据. </param>
+    ///-------------------------------------------------------------------------------------------------
+    static void compress(const void* data, size_t byteSize, std::vector<char>& compressData);
+
+    ///-------------------------------------------------------------------------------------------------
+    /// <summary> Compress. </summary>
+    ///
+    /// <remarks> Dx, 2019/8/6. </remarks>
+    ///
+    /// <typeparam name="T"> Generic type parameter. </typeparam>
+    /// <param name="data">         原始数据. </param>
+    /// <param name="compressData"> [out] 压缩后的数据. </param>
+    ///-------------------------------------------------------------------------------------------------
+    template <typename T>
+    static void compress(const std::vector<T>& data, std::vector<char>& compressData)
+    {
+        compress(data.data(), data.size() * sizeof(T), compressData);
+    }
 
     ///-------------------------------------------------------------------------------------------------
     /// <summary> Decompress. </summary>
