@@ -8,14 +8,44 @@ import zipfile
 import shutil
 import getopt
 
+# 执行的平台
+platform = "windows"
+
 # 临时下载文件夹
 dirDownload = "./download"
+
+# 工具文件夹
+dirTools = "./tools"
 
 # 项目的依赖库文件夹
 dirLib = "./lib"
 
 # 项目内部的依赖库文件夹(要使用cmake一起构建的库)
 dirInternalLib = "./lib"
+
+# 7zip的工具地址
+path7zip = "./tools/7-Zip/7z.exe"
+
+
+def extract_7z(zfile_path, unzip_dir):
+    '''
+    function:使用7z工具解压
+    params:
+        zfile_path:压缩文件路径
+        unzip_dir:解压缩文件夹路径
+    description:
+    '''
+    global platform
+    global path7zip
+
+    if(platform == "windows"):
+        path7zip = os.path.join(dirTools, "7-Zip", "7z.exe")
+
+    # 如果7zip工具不存在那么就下载
+    if not os.path.isfile(path7zip):
+        download_7zip()
+    cmd = '{}  x "{}" -o"{}"'.format(path7zip, zfile_path, unzip_dir)
+    os.system(cmd)
 
 
 def extract_zip(zfile_path, unzip_dir):
@@ -238,12 +268,29 @@ def download_dlog_arm():
     print("done!\r\n")
 
 
+def download_7zip():
+    '''下载工具 7zip'''
+    print("download 7zip ...")
+    url = "https://github.com/daixian/daixian.github.io/raw/master/assets/files/soft/7-Zip.zip"
+    downloadFile = dirDownload + "/7-Zip.zip"
+    download_with_cache(url, downloadFile)
+
+    if not os.path.exists(dirTools):
+        os.makedirs(dirTools)
+    if os.path.exists(dirTools + "/7-Zip"):
+        shutil.rmtree(dirTools + "/7-Zip")
+    else:
+        print("extract start ...")
+        extract_zip(downloadFile, dirTools)
+    print("done!\r\n")
+
+
 def download_boost():
     '''下载库 boost'''
     print("download boost ...")
     # url = "http://mr.xuexuesoft.com:8010/build/boost_1_70_0.zip"
-    url = "http://xuexuesoft.com/files/build/boost_1_70_0.zip"
-    downloadFile = dirDownload + "/boost_1_70_0.zip"
+    url = "http://xuexuesoft.com/files/build/boost_1_70_0.7z"
+    downloadFile = dirDownload + "/boost_1_70_0.7z"
     download_with_cache(url, downloadFile)
 
     if os.path.exists(dirLib + "/boost_1_70_0"):
@@ -251,7 +298,7 @@ def download_boost():
     else:
         # shutil.rmtree(dirLib + "/boost_1_70_0")
         print("extract start ...")
-        extract_zip(downloadFile, dirLib)
+        extract_7z(downloadFile, dirLib)
     print("done!\r\n")
 
 
@@ -361,6 +408,7 @@ def download_rclapi():
 
     print("done!\r\n")
 
+
 def download_sqlitecpp():
     '''下载库 sqlitecpp'''
     print("download sqlitecpp ...")
@@ -374,6 +422,7 @@ def download_sqlitecpp():
     extract_zip(downloadFile, dirLib)
 
     print("done!\r\n")
+
 
 def download_xuexueutility():
     '''下载库 xuexue.utility'''
@@ -481,9 +530,10 @@ def download_opencv3_arm():
 
 
 def main(argv):
-    platform = "windows"
+    global platform
     global dirDownload
     global dirLib
+    global dirTools
     try:
         # http://www.runoob.com/python/python-command-line-arguments.html?tdsourcetag=s_pcqq_aiomsg
         # 返回值由两个元素组成：第一个是（选项，值）对的列表;第二个是剥离选项列表后留下的程序参数列表（这是第一个参数的尾部切片）。
@@ -502,11 +552,13 @@ def main(argv):
             platform = arg
         elif opt in ("-d", "--download"):
             dirDownload = arg
+            father_path = os.path.abspath(dirDownload + os.path.sep + "..")
+            dirTools = os.path.join(father_path, "tools")
         elif opt in ("-l", "--lib"):
             dirLib = arg
 
     print("download lib: platform=" + platform +
-          " dirDownload=" + dirDownload+" dirLib=" + dirLib)
+          " dirDownload=" + dirDownload+" dirLib=" + dirLib+" dirTools=" + dirTools)
     if not os.path.exists(dirDownload):
         os.makedirs(dirDownload)
     if not os.path.exists(dirLib):
