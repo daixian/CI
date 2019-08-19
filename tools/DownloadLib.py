@@ -271,7 +271,7 @@ def download_dlog_arm():
 def download_7zip():
     '''下载工具 7zip'''
     print("download 7zip ...")
-    url = "https://github.com/daixian/daixian.github.io/raw/master/assets/files/soft/7-Zip.zip"
+    url = "https://dev.azure.com/daixian/43db46aa-a4a6-4060-9f5d-9e742cb9199a/_apis/git/repositories/1f082770-d4ab-4105-8008-78039cb7a99a/Items?path=%2Fassets%2Ffiles%2Fsoft%2F7-Zip.zip"
     downloadFile = dirDownload + "/7-Zip.zip"
     download_with_cache(url, downloadFile)
 
