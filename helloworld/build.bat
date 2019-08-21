@@ -1,5 +1,5 @@
 python -V
-python ./tools/DownloadLib.py -d "C:/dxlib/download" -l "C:/dxlib/lib" "concurrentqueue" "dlog" "gtest" "boost" "opencv3"
+python ../tools/DownloadLib.py -d "C:/dxlib/download" -l "C:/dxlib/lib" "concurrentqueue" "dlog" "gtest" "boost" "opencv3"
 mkdir build
 cd build
 mkdir Win64

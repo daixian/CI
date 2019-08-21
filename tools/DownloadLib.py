@@ -226,7 +226,7 @@ def download_cryptopp():
 def download_dlog():
     '''下载库 dlog'''
     print("download dlog ...")
-    url = "https://github.com/daixian/dlog/releases/download/v2.3.0/Release-Windows.zip"
+    url = "https://github.com/daixian/dlog/releases/download/v2.3.3/Release-Windows.zip"
     downloadFile = dirDownload + "/dlog.zip"
     download_with_cache(url, downloadFile)
 
@@ -235,8 +235,8 @@ def download_dlog():
         shutil.rmtree(dirLib + "/dlog")
     extract_zip(downloadFile, dirLib)
 
-    shutil.rmtree(dirLib+"/dlog/x86")
-    os.renames(dirLib + "/dlog/x64/dlog.h", dirLib + "/dlog/dlog.h")
+    # shutil.rmtree(dirLib+"/dlog/x86")
+    # os.renames(dirLib + "/dlog/x64/dlog.h", dirLib + "/dlog/dlog.h")
     print("done!\r\n")
 
 

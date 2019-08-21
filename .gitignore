@@ -20,3 +20,5 @@ SqliteTest/SqliteTest/x64/
 SqliteTest/SqliteTest/\.vs/
 /SqliteTest/SqliteTest/cache.db3
 /SqliteTest/SqliteTest/cache.db3-journal
+
+helloworld/build/
