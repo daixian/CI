@@ -226,8 +226,8 @@ def download_cryptopp():
 def download_dlog():
     '''下载库 dlog'''
     print("download dlog ...")
-    url = "https://github.com/daixian/dlog/releases/download/v2.3.3/Release-Windows.zip"
-    downloadFile = dirDownload + "/dlog_2_3_3.zip"
+    url = "https://github.com/daixian/dlog/releases/download/v2.4.0/Release-Windows.zip"
+    downloadFile = dirDownload + "/dlog_2_4_0.zip"
     download_with_cache(url, downloadFile)
 
     print("extract start ...")
